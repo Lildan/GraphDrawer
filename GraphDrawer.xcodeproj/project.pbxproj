@@ -8,23 +8,27 @@
 
 /* Begin PBXBuildFile section */
 		BD17A94D1EA4FAC5005EC2CF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD17A94C1EA4FAC5005EC2CF /* AppDelegate.swift */; };
-		BD17A94F1EA4FAC5005EC2CF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD17A94E1EA4FAC5005EC2CF /* ViewController.swift */; };
 		BD17A9521EA4FAC5005EC2CF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BD17A9501EA4FAC5005EC2CF /* Main.storyboard */; };
 		BD17A9541EA4FAC5005EC2CF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD17A9531EA4FAC5005EC2CF /* Assets.xcassets */; };
-		BD17A9571EA4FAC5005EC2CF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BD17A9551EA4FAC5005EC2CF /* LaunchScreen.storyboard */; };
 		BD17A95F1EA4FB4C005EC2CF /* GraphViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD17A95E1EA4FB4C005EC2CF /* GraphViewController.swift */; };
+		BD2A31F31EAD33CC009264EF /* Lab5Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD2A31F21EAD33CC009264EF /* Lab5Model.swift */; };
+		BD823A3C1EAC8ABE0042A4A8 /* AxesDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD823A3B1EAC8ABE0042A4A8 /* AxesDrawer.swift */; };
+		BD823A3E1EAD08CE0042A4A8 /* LabInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD823A3D1EAD08CE0042A4A8 /* LabInfoViewController.swift */; };
+		BD823A401EAD090B0042A4A8 /* LabInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD823A3F1EAD090B0042A4A8 /* LabInfoView.swift */; };
 		BDC3182A1EA5074300C1B603 /* GraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC318291EA5074300C1B603 /* GraphView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		BD17A9491EA4FAC5005EC2CF /* GraphDrawer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GraphDrawer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD17A94C1EA4FAC5005EC2CF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		BD17A94E1EA4FAC5005EC2CF /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		BD17A9511EA4FAC5005EC2CF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		BD17A9531EA4FAC5005EC2CF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		BD17A9561EA4FAC5005EC2CF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BD17A9581EA4FAC5005EC2CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BD17A95E1EA4FB4C005EC2CF /* GraphViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphViewController.swift; sourceTree = "<group>"; };
+		BD2A31F21EAD33CC009264EF /* Lab5Model.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lab5Model.swift; sourceTree = "<group>"; };
+		BD823A3B1EAC8ABE0042A4A8 /* AxesDrawer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AxesDrawer.swift; sourceTree = "<group>"; };
+		BD823A3D1EAD08CE0042A4A8 /* LabInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabInfoViewController.swift; sourceTree = "<group>"; };
+		BD823A3F1EAD090B0042A4A8 /* LabInfoView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabInfoView.swift; sourceTree = "<group>"; };
 		BDC318291EA5074300C1B603 /* GraphView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -59,13 +63,15 @@
 			isa = PBXGroup;
 			children = (
 				BD17A94C1EA4FAC5005EC2CF /* AppDelegate.swift */,
-				BD17A94E1EA4FAC5005EC2CF /* ViewController.swift */,
 				BD17A9501EA4FAC5005EC2CF /* Main.storyboard */,
+				BD2A31F21EAD33CC009264EF /* Lab5Model.swift */,
+				BD823A3D1EAD08CE0042A4A8 /* LabInfoViewController.swift */,
+				BD823A3F1EAD090B0042A4A8 /* LabInfoView.swift */,
 				BD17A9531EA4FAC5005EC2CF /* Assets.xcassets */,
-				BD17A9551EA4FAC5005EC2CF /* LaunchScreen.storyboard */,
 				BD17A9581EA4FAC5005EC2CF /* Info.plist */,
 				BD17A95E1EA4FB4C005EC2CF /* GraphViewController.swift */,
 				BDC318291EA5074300C1B603 /* GraphView.swift */,
+				BD823A3B1EAC8ABE0042A4A8 /* AxesDrawer.swift */,
 			);
 			path = GraphDrawer;
 			sourceTree = "<group>";
@@ -130,7 +136,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BD17A9571EA4FAC5005EC2CF /* LaunchScreen.storyboard in Resources */,
 				BD17A9541EA4FAC5005EC2CF /* Assets.xcassets in Resources */,
 				BD17A9521EA4FAC5005EC2CF /* Main.storyboard in Resources */,
 			);
@@ -143,9 +148,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BD2A31F31EAD33CC009264EF /* Lab5Model.swift in Sources */,
+				BD823A401EAD090B0042A4A8 /* LabInfoView.swift in Sources */,
 				BD17A95F1EA4FB4C005EC2CF /* GraphViewController.swift in Sources */,
-				BD17A94F1EA4FAC5005EC2CF /* ViewController.swift in Sources */,
+				BD823A3C1EAC8ABE0042A4A8 /* AxesDrawer.swift in Sources */,
 				BD17A94D1EA4FAC5005EC2CF /* AppDelegate.swift in Sources */,
+				BD823A3E1EAD08CE0042A4A8 /* LabInfoViewController.swift in Sources */,
 				BDC3182A1EA5074300C1B603 /* GraphView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -159,14 +167,6 @@
 				BD17A9511EA4FAC5005EC2CF /* Base */,
 			);
 			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		BD17A9551EA4FAC5005EC2CF /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				BD17A9561EA4FAC5005EC2CF /* Base */,
-			);
-			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

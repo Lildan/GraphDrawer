@@ -11,22 +11,32 @@ import UIKit
 class GraphViewController : UIViewController {
     
     //Model
-    var yForX : ((Double) ->Double)?
-    
+    var yForX : ((Double) ->Double)? = {tan($0)} {
+        didSet { updateUI() }
+    }
     
     //View
-    @IBOutlet weak var graphView: GraphView!
+    @IBOutlet weak var graphView: GraphView! {
+        didSet {
+            graphView.addGestureRecognizer(UIPinchGestureRecognizer(target: graphView, action: #selector(GraphView.scale(_:))))
+            
+            graphView.addGestureRecognizer(UIPanGestureRecognizer(target: graphView, action: #selector(GraphView.originMove(_:))))
+            
+            let doubleTapRecognizer = UITapGestureRecognizer(target: graphView, action: #selector(GraphView.origin(_:)))
+            doubleTapRecognizer.numberOfTapsRequired = 2
+            graphView.addGestureRecognizer((doubleTapRecognizer))
+            
+            updateUI()
+        }
+    }
     
-    func UpdateUI() {
-    graphView.yForX = yForX
+    func updateUI() {
+        if let gv = graphView {
+            gv.yForX = yForX
+        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad ()
-        yForX = ((x: Double)->(Double)) {
-            (x) -> cos(1/(x+2))*x
-        }
-            
-        
     }
 }
