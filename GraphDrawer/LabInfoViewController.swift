@@ -173,7 +173,21 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
         labelGorner.numberOfLines = 0
         labelGorner.frame = CGRect(x: CGFloat(15), y: headerHeight*6 , width: page.bounds.width - 30, height: headerHeight*3)
         page.addSubview(labelGorner)
- 
+        
+        let label3 = UILabel()
+        label3.text = "Linear approximation function"
+        label3.textAlignment = NSTextAlignment.center
+        label3.frame = CGRect(x: 0, y: headerHeight*9, width: page.bounds.width, height: headerHeight)
+        page.addSubview(label3)
+        
+        let labelLinearApproximation = UILabel()
+        labelLinearApproximation.text = model.linearApproximationFunctionLiteral
+        labelLinearApproximation.textAlignment = NSTextAlignment.center
+        labelLinearApproximation.numberOfLines = 0
+        labelLinearApproximation.frame = CGRect(x: CGFloat(15), y: headerHeight*10 , width: page.bounds.width - 30, height: headerHeight)
+        page.addSubview(labelLinearApproximation)
+        
+        
         return page
     }
     
@@ -182,38 +196,60 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
         let page = PolynomValuesPageView()
         page.frame.size = scrollView.bounds.size
         
+        var yOffSet = CGFloat(0)
         let headerHeight : CGFloat = 35
         
-        let header = createDefaultPageHeader(text: "Interpolation Polynom Values", withHeight: headerHeight)
+        let header = createDefaultPageHeader(text: "Functions' Values", withHeight: headerHeight)
         page.addSubview(header)
+        yOffSet += headerHeight
         
-        
-        let cellWidth = scrollView.bounds.size.width / CGFloat(2)
+        let cellWidth = scrollView.bounds.size.width / CGFloat(3)
         
         for i in 0..<model.args.count {
             let cellX = createDefaultCell()
-            cellX.frame = CGRect(x: 0, y: headerHeight*CGFloat(i+1), width: cellWidth, height: headerHeight)
-            var txt = "x"
+            cellX.frame = CGRect(x: 0, y: yOffSet, width: cellWidth, height: headerHeight)
+            var xtxt = "x"
             var counter  = 0
             
             while counter <= i {
-                txt = txt + "'"
+                xtxt = xtxt + "'"
                 counter += 1
             }
-            var value = model.args[i]
-            cellX.text = txt + " = " + String(value)
+            
+            cellX.text = xtxt + " = " + String(model.args[i])
             page.addSubview((cellX))
             
             let cellLX = createDefaultCell()
-            cellLX.frame = CGRect(x: cellWidth, y: headerHeight*CGFloat(i+1), width: cellWidth, height: headerHeight)
-            value = roundDouble(model.interpolationPolynomFunction(model.args[i]), toPrecision: 4)
-            txt = "L(" + txt + ") = " + String(value)
+            cellLX.frame = CGRect(x: cellWidth, y: yOffSet, width: cellWidth, height: headerHeight)
+            var value = roundDouble(model.interpolationPolynomFunction(model.args[i]), toPrecision: 4)
+            var txt = "L(" + xtxt + ") = " + String(value)
             cellLX.text = txt
             page.addSubview(cellLX)
+            
+            let cellAX = createDefaultCell()
+            cellAX.frame = CGRect(x: cellWidth*CGFloat(2), y: yOffSet, width: cellWidth, height: headerHeight)
+            value = roundDouble(model.linearApproximationFunction(model.args[i]), toPrecision: 4)
+            txt = "A(" + xtxt + ") = " + String(value)
+            cellAX.text = txt
+            page.addSubview(cellAX)
+            yOffSet += headerHeight
         }
         
+        let header2 = createDefaultPageHeader(text: "Sum of squares of deviations", withHeight: headerHeight)
+        header2.frame.origin.y = yOffSet + headerHeight
+        page.addSubview((header2))
+        yOffSet += CGFloat(2)*headerHeight
+        
+        let cell = createDefaultCell()
+        cell.frame = CGRect(x: 0, y: yOffSet, width: page.bounds.width, height: headerHeight)
+        cell.textAlignment = NSTextAlignment.center
+        cell.text = String(model.calculateDeviations())
+        page.addSubview(cell)
+        yOffSet += headerHeight
+        
+        
         page.enterXTextField = UITextField()
-        page.enterXTextField!.frame = CGRect(x: page.bounds.width * CGFloat(0.25), y: CGFloat(5) * headerHeight, width: page.bounds.width * CGFloat(0.5), height: headerHeight)
+        page.enterXTextField!.frame = CGRect(x: page.bounds.width * CGFloat(0.25), y: yOffSet + headerHeight, width: page.bounds.width * CGFloat(0.5), height: headerHeight)
         page.enterXTextField!.placeholder = "Enter X"
         page.enterXTextField!.layer.borderColor = UIColor.blue.cgColor
         page.enterXTextField!.layer.borderWidth = 2
@@ -223,13 +259,20 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
         page.enterXTextField!.delegate = self
         
         page.addSubview((page.enterXTextField!))
+        yOffSet += 2*headerHeight
         
         
         page.resultLXLabel = createDefaultCell()
         page.resultLXLabel?.text = "L(x)"
-        page.resultLXLabel?.frame = CGRect(x: 0, y: CGFloat(6)*headerHeight, width: page.bounds.width, height: headerHeight)
+        page.resultLXLabel?.frame = CGRect(x: 0, y: yOffSet, width: page.bounds.width * CGFloat(0.5), height: headerHeight)
         page.addSubview(page.resultLXLabel!)
+       
         
+        page.resultAXLabel = createDefaultCell()
+        page.resultAXLabel?.text = "A(x)"
+        page.resultAXLabel?.frame = CGRect(x: page.bounds.width * CGFloat(0.5), y: yOffSet, width: page.bounds.width * CGFloat(0.5), height: headerHeight)
+        page.addSubview(page.resultAXLabel!)
+        yOffSet += headerHeight
         
         return page
     }
@@ -239,13 +282,15 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
         if let number = Double(textField.text!)  {
             textField.layer.borderColor = UIColor.green.cgColor
             if let page = textField.superview as? PolynomValuesPageView {
-                page.resultLXLabel?.text = "L(x)=" + String(model.interpolationPolynomFunction(number))
+                page.resultLXLabel?.text = "L(x)=" + String(roundDouble(model.interpolationPolynomFunction(number), toPrecision: 4))
+                page.resultAXLabel?.text = "A(x)=" + String(roundDouble(model.linearApproximationFunction(number), toPrecision: 4))
             }
             
         } else {
             textField.layer.borderColor = UIColor.red.cgColor
             if let page = textField.superview as? PolynomValuesPageView {
                 page.resultLXLabel?.text = "L(x)"
+                page.resultAXLabel?.text = "A(x)"
             }
         }
         

@@ -13,4 +13,5 @@ class PolynomValuesPageView : UIView {
     var enterXTextField : UITextField? = nil
     var calculateButton : UIButton? = nil
     var resultLXLabel : UILabel? = nil
+    var resultAXLabel : UILabel? = nil
 }

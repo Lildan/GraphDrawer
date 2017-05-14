@@ -15,14 +15,14 @@ class InterpolationModel {
     
     var functionTabulation :[(arg:Double, value:Double)] =
         [ (0.0, 0.0),
-          (0.1, 0.09983),
-          (0.2, 0.19866),
-          (0.3, 0.29552),
+          //(0.1, 0.09983),
+          //(0.2, 0.19866),
+          //(0.3, 0.29552),
           //(0.4, 0.38941),
           //(0.5, 0.47942),
-          (0.6, 0.56464),
-          (0.7, 0.64421),
-          (0.8, 0.71735),
+          //(0.6, 0.56464),
+          //(0.7, 0.64421),
+          //(0.8, 0.71735),
           (0.9, 0.78332)
         ]
     var interpolationPoints: [Double] = [0.445, 0.778, 0.801 ]
@@ -118,11 +118,19 @@ class InterpolationModel {
         }
     }
     
-    var linearApproximationfunctionLiteral : String {
+    var linearApproximationFunctionLiteral : String {
         get {
-            let result = "y = " + String(roundDouble(linearApproximationCoefA, toPrecision: 4)) + "x + " + String(roundDouble(linearApproximationCoefB, toPrecision: 4))
+            let result = "A(x) = " + String(roundDouble(linearApproximationCoefA, toPrecision: 4)) + "x + " + String(roundDouble(linearApproximationCoefB, toPrecision: 4))
             return result
         }
+    }
+    
+    func calculateDeviations ()-> Double {
+        var result = 0.0
+        for item in functionTabulation {
+            result += pow(item.value - linearApproximationFunction(item.arg), 2)
+        }
+        return result
     }
     
     // Calculates divided differences
