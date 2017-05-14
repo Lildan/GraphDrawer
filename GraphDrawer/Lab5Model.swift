@@ -29,7 +29,7 @@ class Lab5Model {
     
     
     // Returns a function - interpolation polynom calculated by Gorner`s schema
-    var function :(Double) -> Double {
+    var interpolationPolynomFunction : (Double) -> Double {
         get {
             
             return  { (_ X: Double) -> Double  in

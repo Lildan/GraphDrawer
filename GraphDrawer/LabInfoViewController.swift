@@ -25,13 +25,19 @@ class LabInfoViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        scrollView.addSubview(createDividedDifferencesPageView())
+        var pages = [UIView]()
         
-        let page = createPolynomInformationPageView()
-        page.frame.origin.x = scrollView.bounds.width
+        pages.append(createDividedDifferencesPageView())
+        pages.append(createPolynomInformationPageView())
+        pages.append(createPolynomValuesPageView())
         
-        scrollView.addSubview(page)
-        scrollView.contentSize.width = scrollView.bounds.size.width*CGFloat(2)
+        // Adding pages to the scrollview
+        for (i, page) in pages.enumerated() {
+            page.frame.origin.x = scrollView.bounds.width * CGFloat(i)
+            scrollView.addSubview(page)
+        }
+        
+        scrollView.contentSize.width = scrollView.bounds.size.width*CGFloat(pages.count)
         scrollView.isPagingEnabled = true
     }
     
@@ -169,17 +175,39 @@ class LabInfoViewController: UIViewController {
     }
     
     
-    func createPolynomValuesPageView ()-> UIView {
+    func createPolynomValuesPageView () -> UIView {
         let page = UIView()
         page.frame.size = scrollView.bounds.size
         
         let headerHeight : CGFloat = 35
         
-        let header = createDefaultPageHeader(text: "Interpolation Polynom Information", withHeight: headerHeight)
+        let header = createDefaultPageHeader(text: "Interpolation Polynom Values", withHeight: headerHeight)
         page.addSubview(header)
         
+        let args = [ 0.445 , 0.778, 0.801]
+        let cellWidth = scrollView.bounds.size.width / CGFloat(2)
         
-        
+        for i in 0..<args.count {
+            let cellX = createDefaultCell()
+            cellX.frame = CGRect(x: 0, y: headerHeight*CGFloat(i+1), width: cellWidth, height: headerHeight)
+            var txt = "x"
+            var counter  = 0
+            
+            while counter <= i {
+                txt = txt + "'"
+                counter += 1
+            }
+            var value = args[i]
+            cellX.text = txt + " = " + String(value)
+            page.addSubview((cellX))
+            
+            let cellLX = createDefaultCell()
+            cellLX.frame = CGRect(x: cellWidth, y: headerHeight*CGFloat(i+1), width: cellWidth, height: headerHeight)
+            value = roundDouble(model.interpolationPolynomFunction(args[i]), toPrecision: 4)
+            txt = "L(" + txt + ") = " + String(value)
+            cellLX.text = txt
+            page.addSubview(cellLX)
+        }
         
         return page
     }
@@ -196,7 +224,7 @@ class LabInfoViewController: UIViewController {
         if let identifier = segue.identifier,
         identifier == Storyboard.ShowGraph,
         let vc = destination as? GraphViewController {
-            vc.yForX = model.function
+            vc.yForX = model.interpolationPolynomFunction
             vc.navigationItem.title = "L(x)"
         }
     }
