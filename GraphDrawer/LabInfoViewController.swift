@@ -39,11 +39,10 @@ class LabInfoViewController: UIViewController {
         let page = UIView()
         page.frame.size = scrollView.bounds.size
         
-        let header = UILabel()
-        header.text = "Divided Differences Table"
-        header.textAlignment = NSTextAlignment.center
         let headerHeight : CGFloat = 35
-        header.frame = CGRect(x: 0, y: 0, width: page.bounds.width, height: headerHeight)
+        
+        let header = createDefaultPageHeader(text: "Divided Differences Table", withHeight: headerHeight)
+
         page.addSubview(header)
         
         let rowNumber = model.functionTabulation.count + 2
@@ -120,16 +119,22 @@ class LabInfoViewController: UIViewController {
         return cell
     }
     
+    func createDefaultPageHeader (text: String, withHeight height : CGFloat) -> UILabel{
+        let header = UILabel()
+        header.text = text
+        header.textAlignment = NSTextAlignment.center
+        header.frame = CGRect(x: 0, y: 0, width: scrollView.bounds.width, height: height)
+        
+        return header
+    }
+    
     func createPolynomInformationPageView ()-> UIView {
         let page = UIView()
         page.frame.size = scrollView.bounds.size
         
         let headerHeight : CGFloat = 35
         
-        let header = UILabel()
-        header.text = "Interpolation Polynom Information"
-        header.textAlignment = NSTextAlignment.center
-        header.frame = CGRect(x: 0, y: 0, width: page.bounds.width, height: headerHeight)
+        let header = createDefaultPageHeader(text: "Interpolation Polynom Information", withHeight: headerHeight)
         page.addSubview(header)
         
         let label1 = UILabel()
@@ -159,6 +164,21 @@ class LabInfoViewController: UIViewController {
         labelGorner.numberOfLines = 0
         labelGorner.frame = CGRect(x: CGFloat(15), y: headerHeight*6 , width: page.bounds.width - 30, height: headerHeight*3)
         page.addSubview(labelGorner)
+ 
+        return page
+    }
+    
+    
+    func createPolynomValuesPageView ()-> UIView {
+        let page = UIView()
+        page.frame.size = scrollView.bounds.size
+        
+        let headerHeight : CGFloat = 35
+        
+        let header = createDefaultPageHeader(text: "Interpolation Polynom Information", withHeight: headerHeight)
+        page.addSubview(header)
+        
+        
         
         
         return page

@@ -11,7 +11,7 @@ import UIKit
 class GraphViewController : UIViewController {
     
     //Model
-    var yForX : ((Double) ->Double)? = {tan($0)} {
+    var yForX : ((Double) ->Double)? = nil {
         didSet { updateUI() }
     }
     
