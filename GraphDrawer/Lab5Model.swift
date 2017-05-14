@@ -16,10 +16,10 @@ class Lab5Model {
           (0.2, 0.19866),
           //(0.3, 0.29552),
           (0.4, 0.38941),
-          (0.5, 0.47942),
+          //(0.5, 0.47942),
           (0.6, 0.56464),
-          (0.7, 0.64421),
-          //(0.8, 0.71735),
+          //(0.7, 0.64421),
+          (0.8, 0.71735),
           (0.9, 0.78332)
         ]
     var interpolationPoints: [Double] = [0.445, 0.778, 0.801 ]
@@ -51,15 +51,16 @@ class Lab5Model {
     var functionLiteral: String {
         get {
             var i = functionTabulation.count-1
-            var dd = String(dividedDifferences[i][0])
+            var dd = String(roundDouble(dividedDifferences[i][0], toPrecision: 2))
             var x_i : String
             var s : String = dd
             i -= 1
             while i>=0 {
-                dd = String(dividedDifferences[i][0])
+                dd = String(roundDouble(dividedDifferences[i][0], toPrecision: 2))
                 x_i = String(functionTabulation[i].arg)
                 
-                s = dd + "x-" + x_i + ")" + s
+                s = "(" + s + ")"
+                s = dd + "+(x-" + x_i + ")*" + s
                 i -= 1
             }
             s = "L(x)=" + s

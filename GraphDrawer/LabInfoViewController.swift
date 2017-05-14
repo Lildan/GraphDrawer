@@ -26,6 +26,13 @@ class LabInfoViewController: UIViewController {
         super.viewDidLoad()
         
         scrollView.addSubview(createDividedDifferencesPageView())
+        
+        let page = createPolynomInformationPageView()
+        page.frame.origin.x = scrollView.bounds.width
+        
+        scrollView.addSubview(page)
+        scrollView.contentSize.width = scrollView.bounds.size.width*CGFloat(2)
+        scrollView.isPagingEnabled = true
     }
     
     func createDividedDifferencesPageView () -> UIView {
@@ -45,7 +52,7 @@ class LabInfoViewController: UIViewController {
         let cellWidth = page.bounds.size.width / CGFloat(columnNumber)
         let cellHeight = (page.bounds.size.height - headerHeight) / CGFloat(rowNumber)
         
-        let cellBorderColor = UIColor.blue.cgColor
+        let cellBorderColor = UIColor.gray.cgColor
         let cellBorderWidth = CGFloat(1)
         
         // Adding top header like: X f() f(;)...
@@ -91,7 +98,7 @@ class LabInfoViewController: UIViewController {
                                     width: cellWidth,
                                     height: cellHeight)
             
-                cell.text = String((round(100*model.dividedDifferences[j][i]))/100)
+                cell.text = String(roundDouble(model.dividedDifferences[j][i], toPrecision: 2))
                 page.addSubview(cell)
             }
             addYOffSet += CGFloat(0.5)
@@ -113,6 +120,50 @@ class LabInfoViewController: UIViewController {
         return cell
     }
     
+    func createPolynomInformationPageView ()-> UIView {
+        let page = UIView()
+        page.frame.size = scrollView.bounds.size
+        
+        let headerHeight : CGFloat = 35
+        
+        let header = UILabel()
+        header.text = "Interpolation Polynom Information"
+        header.textAlignment = NSTextAlignment.center
+        header.frame = CGRect(x: 0, y: 0, width: page.bounds.width, height: headerHeight)
+        page.addSubview(header)
+        
+        let label1 = UILabel()
+        label1.text = "Newton`s polynom coefficients"
+        label1.textAlignment = NSTextAlignment.center
+        label1.frame = CGRect(x: 0, y: headerHeight*2, width: page.bounds.width, height: headerHeight)
+        page.addSubview(label1)
+        
+        let cellSize = page.bounds.width / CGFloat(model.dividedDifferences.count)
+        
+        for j in 0..<model.dividedDifferences.count {
+            let cell = createDefaultCell()
+            cell.frame = CGRect(x: CGFloat(j)*cellSize, y: headerHeight*3, width: cellSize, height: headerHeight)
+            cell.text = String(roundDouble(model.dividedDifferences[j][0], toPrecision: 2))
+            
+            page.addSubview(cell)
+        }
+        
+        let label2 = UILabel()
+        label2.text = "Newton`s polynom by Gorner`s schema"
+        label2.textAlignment = NSTextAlignment.center
+        label2.frame = CGRect(x: 0, y: headerHeight*5, width: page.bounds.width, height: headerHeight)
+        page.addSubview(label2)
+        
+        let labelGorner = UILabel()
+        labelGorner.text = model.functionLiteral
+        labelGorner.numberOfLines = 0
+        labelGorner.frame = CGRect(x: CGFloat(15), y: headerHeight*6 , width: page.bounds.width - 30, height: headerHeight*3)
+        page.addSubview(labelGorner)
+        
+        
+        return page
+    }
+    
     private struct Storyboard {
         static let ShowGraph = "ShowGraph"
     }
@@ -126,8 +177,14 @@ class LabInfoViewController: UIViewController {
         identifier == Storyboard.ShowGraph,
         let vc = destination as? GraphViewController {
             vc.yForX = model.function
-            vc.navigationItem.title = model.functionLiteral
+            vc.navigationItem.title = "L(x)"
         }
     }
 }
+
+func roundDouble (_ arg: Double, toPrecision i: Int) -> Double{
+    let a = pow(10,Double(i))
+    return (round(arg * a))/a
+}
+
 
