@@ -12,13 +12,14 @@ class InterpolationModel {
     
     let args = [ 0.445 , 0.778, 0.801]
     
+    
     var functionTabulation :[(arg:Double, value:Double)] =
         [ (0.0, 0.0),
           (0.1, 0.09983),
           (0.2, 0.19866),
           (0.3, 0.29552),
-          (0.4, 0.38941),
-          (0.5, 0.47942),
+          //(0.4, 0.38941),
+          //(0.5, 0.47942),
           (0.6, 0.56464),
           (0.7, 0.64421),
           (0.8, 0.71735),
@@ -70,6 +71,60 @@ class InterpolationModel {
         }
     }
     
+    var linearApproximationCoefA : Double {
+        get {
+            let N = Double(functionTabulation.count)
+            var sumX = 0.0
+            var sumY = 0.0
+            var sumXY = 0.0
+            var sumSquareX = 0.0
+            
+            for item in functionTabulation {
+                sumX += item.arg
+                sumY += item.value
+                sumXY += item.arg*item.value
+                sumSquareX += item.arg*item.arg
+            }
+            
+            let result : Double = ( N*sumXY - sumX*sumY ) / ( N*sumSquareX - sumX*sumX )
+            
+            return result
+        }
+    }
+    
+    var linearApproximationCoefB : Double {
+        get {
+            let N = Double(functionTabulation.count)
+        
+            var sumX = 0.0
+            var sumY = 0.0
+        
+            for item in functionTabulation {
+                sumX += item.arg
+                sumY += item.value
+            }
+        
+            let result = ( sumY - linearApproximationCoefA*sumX ) / N
+            return result
+        }
+    }
+    
+    var linearApproximationFunction : (Double) -> Double {
+        get {
+            return {
+                let result = self.linearApproximationCoefA*$0 + self.linearApproximationCoefB
+                return result
+            }
+        }
+    }
+    
+    var linearApproximationfunctionLiteral : String {
+        get {
+            let result = "y = " + String(roundDouble(linearApproximationCoefA, toPrecision: 4)) + "x + " + String(roundDouble(linearApproximationCoefB, toPrecision: 4))
+            return result
+        }
+    }
+    
     // Calculates divided differences
      func calculateDD () -> [[Double]] {
         // 0 divided difference
@@ -93,4 +148,31 @@ class InterpolationModel {
         
         return dd
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }

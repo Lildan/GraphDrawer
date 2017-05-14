@@ -12,7 +12,7 @@
 		BD17A9541EA4FAC5005EC2CF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BD17A9531EA4FAC5005EC2CF /* Assets.xcassets */; };
 		BD17A95F1EA4FB4C005EC2CF /* GraphViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD17A95E1EA4FB4C005EC2CF /* GraphViewController.swift */; };
 		BD2A31F31EAD33CC009264EF /* InterpolationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD2A31F21EAD33CC009264EF /* InterpolationModel.swift */; };
-		BD52E2321EC8AC2E00F07268 /* PagesUIViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD52E2311EC8AC2E00F07268 /* PagesUIViews.swift */; };
+		BD52E2321EC8AC2E00F07268 /* PagesUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD52E2311EC8AC2E00F07268 /* PagesUIView.swift */; };
 		BD823A3C1EAC8ABE0042A4A8 /* AxesDrawer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD823A3B1EAC8ABE0042A4A8 /* AxesDrawer.swift */; };
 		BD823A3E1EAD08CE0042A4A8 /* LabInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD823A3D1EAD08CE0042A4A8 /* LabInfoViewController.swift */; };
 		BDC3182A1EA5074300C1B603 /* GraphView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BDC318291EA5074300C1B603 /* GraphView.swift */; };
@@ -26,7 +26,7 @@
 		BD17A9581EA4FAC5005EC2CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BD17A95E1EA4FB4C005EC2CF /* GraphViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphViewController.swift; sourceTree = "<group>"; };
 		BD2A31F21EAD33CC009264EF /* InterpolationModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InterpolationModel.swift; sourceTree = "<group>"; };
-		BD52E2311EC8AC2E00F07268 /* PagesUIViews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PagesUIViews.swift; sourceTree = "<group>"; };
+		BD52E2311EC8AC2E00F07268 /* PagesUIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PagesUIView.swift; sourceTree = "<group>"; };
 		BD823A3B1EAC8ABE0042A4A8 /* AxesDrawer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AxesDrawer.swift; sourceTree = "<group>"; };
 		BD823A3D1EAD08CE0042A4A8 /* LabInfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabInfoViewController.swift; sourceTree = "<group>"; };
 		BDC318291EA5074300C1B603 /* GraphView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GraphView.swift; sourceTree = "<group>"; };
@@ -86,7 +86,7 @@
 			isa = PBXGroup;
 			children = (
 				BD2A31F21EAD33CC009264EF /* InterpolationModel.swift */,
-				BD52E2311EC8AC2E00F07268 /* PagesUIViews.swift */,
+				BD52E2311EC8AC2E00F07268 /* PagesUIView.swift */,
 				BD823A3D1EAD08CE0042A4A8 /* LabInfoViewController.swift */,
 			);
 			name = Main;
@@ -166,7 +166,7 @@
 			files = (
 				BD2A31F31EAD33CC009264EF /* InterpolationModel.swift in Sources */,
 				BD17A95F1EA4FB4C005EC2CF /* GraphViewController.swift in Sources */,
-				BD52E2321EC8AC2E00F07268 /* PagesUIViews.swift in Sources */,
+				BD52E2321EC8AC2E00F07268 /* PagesUIView.swift in Sources */,
 				BD823A3C1EAC8ABE0042A4A8 /* AxesDrawer.swift in Sources */,
 				BD17A94D1EA4FAC5005EC2CF /* AppDelegate.swift in Sources */,
 				BD823A3E1EAD08CE0042A4A8 /* LabInfoViewController.swift in Sources */,

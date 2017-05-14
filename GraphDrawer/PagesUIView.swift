@@ -1,5 +1,5 @@
 //
-//  PagesUIViews.swift
+//  PagesUIView.swift
 //  GraphDrawer
 //
 //  Created by Lildan on 5/14/17.
