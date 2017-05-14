@@ -22,7 +22,7 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
     
     var divDifPage : UIView! = nil
     var polyInfoPage : UIView! = nil
-    var polyValuesPage : UIView! = nil
+    var polyValuesPage : PolynomValuesPageView! = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -178,7 +178,7 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
     }
     
     
-    func createPolynomValuesPageView () -> UIView {
+    func createPolynomValuesPageView () -> PolynomValuesPageView {
         let page = PolynomValuesPageView()
         page.frame.size = scrollView.bounds.size
         
