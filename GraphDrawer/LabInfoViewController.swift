@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class LabInfoViewController: UIViewController {
+class LabInfoViewController: UIViewController, UITextFieldDelegate {
     
     // View
     @IBOutlet weak var scrollView: UIScrollView!
@@ -18,18 +18,23 @@ class LabInfoViewController: UIViewController {
     @IBAction func showGraphTap(_ sender: Any) {
         
     }
-    var model: Lab5Model = Lab5Model()
+    var model : InterpolationModel = InterpolationModel()
     
-    var viewsNumber: Int = 0
+    var divDifPage : UIView! = nil
+    var polyInfoPage : UIView! = nil
+    var polyValuesPage : UIView! = nil
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         var pages = [UIView]()
         
-        pages.append(createDividedDifferencesPageView())
-        pages.append(createPolynomInformationPageView())
-        pages.append(createPolynomValuesPageView())
+        divDifPage = createDividedDifferencesPageView()
+        pages.append(divDifPage)
+        polyInfoPage = createPolynomInformationPageView()
+        pages.append(polyInfoPage)
+        polyValuesPage = createPolynomValuesPageView()
+        pages.append(polyValuesPage)
         
         // Adding pages to the scrollview
         for (i, page) in pages.enumerated() {
@@ -64,7 +69,6 @@ class LabInfoViewController: UIViewController {
         for i in 0..<columnNumber {
             let cell = createDefaultCell(cellBorderColor,cellBorderWidth)
             cell.frame = CGRect(x: CGFloat(i)*cellWidth, y: headerHeight, width: cellWidth, height: cellHeight)
-
             
             // inserting appropriate text
             if i == 0 {
@@ -78,7 +82,6 @@ class LabInfoViewController: UIViewController {
                 txt += ")"
                 cell.text = txt
             }
-            
             page.addSubview(cell)
         }
         
@@ -176,7 +179,7 @@ class LabInfoViewController: UIViewController {
     
     
     func createPolynomValuesPageView () -> UIView {
-        let page = UIView()
+        let page = PolynomValuesPageView()
         page.frame.size = scrollView.bounds.size
         
         let headerHeight : CGFloat = 35
@@ -184,10 +187,10 @@ class LabInfoViewController: UIViewController {
         let header = createDefaultPageHeader(text: "Interpolation Polynom Values", withHeight: headerHeight)
         page.addSubview(header)
         
-        let args = [ 0.445 , 0.778, 0.801]
+        
         let cellWidth = scrollView.bounds.size.width / CGFloat(2)
         
-        for i in 0..<args.count {
+        for i in 0..<model.args.count {
             let cellX = createDefaultCell()
             cellX.frame = CGRect(x: 0, y: headerHeight*CGFloat(i+1), width: cellWidth, height: headerHeight)
             var txt = "x"
@@ -197,19 +200,56 @@ class LabInfoViewController: UIViewController {
                 txt = txt + "'"
                 counter += 1
             }
-            var value = args[i]
+            var value = model.args[i]
             cellX.text = txt + " = " + String(value)
             page.addSubview((cellX))
             
             let cellLX = createDefaultCell()
             cellLX.frame = CGRect(x: cellWidth, y: headerHeight*CGFloat(i+1), width: cellWidth, height: headerHeight)
-            value = roundDouble(model.interpolationPolynomFunction(args[i]), toPrecision: 4)
+            value = roundDouble(model.interpolationPolynomFunction(model.args[i]), toPrecision: 4)
             txt = "L(" + txt + ") = " + String(value)
             cellLX.text = txt
             page.addSubview(cellLX)
         }
         
+        page.enterXTextField = UITextField()
+        page.enterXTextField!.frame = CGRect(x: page.bounds.width * CGFloat(0.25), y: CGFloat(5) * headerHeight, width: page.bounds.width * CGFloat(0.5), height: headerHeight)
+        page.enterXTextField!.placeholder = "Enter X"
+        page.enterXTextField!.layer.borderColor = UIColor.blue.cgColor
+        page.enterXTextField!.layer.borderWidth = 2
+        page.enterXTextField!.layer.cornerRadius = 5
+        page.enterXTextField!.textAlignment = NSTextAlignment.center
+        page.enterXTextField!.returnKeyType = .done
+        page.enterXTextField!.delegate = self
+        
+        page.addSubview((page.enterXTextField!))
+        
+        
+        page.resultLXLabel = createDefaultCell()
+        page.resultLXLabel?.text = "L(x)"
+        page.resultLXLabel?.frame = CGRect(x: 0, y: CGFloat(6)*headerHeight, width: page.bounds.width, height: headerHeight)
+        page.addSubview(page.resultLXLabel!)
+        
+        
         return page
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        if let number = Double(textField.text!)  {
+            textField.layer.borderColor = UIColor.green.cgColor
+            if let page = textField.superview as? PolynomValuesPageView {
+                page.resultLXLabel?.text = "L(x)=" + String(model.interpolationPolynomFunction(number))
+            }
+            
+        } else {
+            textField.layer.borderColor = UIColor.red.cgColor
+            if let page = textField.superview as? PolynomValuesPageView {
+                page.resultLXLabel?.text = "L(x)"
+            }
+        }
+        
+        return true
     }
     
     private struct Storyboard {

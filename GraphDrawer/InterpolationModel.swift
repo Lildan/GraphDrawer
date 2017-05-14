@@ -1,5 +1,5 @@
 //
-//  Lab5Model.swift
+//  InterpolationModel.swift
 //  GraphDrawer
 //
 //  Created by Lildan on 4/23/17.
@@ -8,7 +8,9 @@
 
 import Foundation
 
-class Lab5Model {
+class InterpolationModel {
+    
+    let args = [ 0.445 , 0.778, 0.801]
     
     var functionTabulation :[(arg:Double, value:Double)] =
         [ (0.0, 0.0),
