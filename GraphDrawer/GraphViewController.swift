@@ -11,9 +11,14 @@ import UIKit
 class GraphViewController : UIViewController {
     
     //Model
-    var yForX : ((Double) ->Double)? = nil {
+    var firstFunc : ((Double) ->Double)? = nil {
         didSet { updateUI() }
     }
+    
+    var secondFunc : ((Double) ->Double)? = nil {
+        didSet { updateUI() }
+    }
+
     
     //View
     @IBOutlet weak var graphView: GraphView! {
@@ -32,7 +37,8 @@ class GraphViewController : UIViewController {
     
     func updateUI() {
         if let gv = graphView {
-            gv.yForX = yForX
+            gv.firstFunc = firstFunc
+            gv.secondFunc = secondFunc
         }
     }
     

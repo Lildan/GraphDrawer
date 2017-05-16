@@ -309,8 +309,9 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
         if let identifier = segue.identifier,
         identifier == Storyboard.ShowGraph,
         let vc = destination as? GraphViewController {
-            vc.yForX = model.interpolationPolynomFunction
-            vc.navigationItem.title = "L(x)"
+            vc.firstFunc = model.interpolationPolynomFunction
+            vc.secondFunc = model.linearApproximationFunction
+            vc.navigationItem.title = "Graphs"
         }
     }
 }
