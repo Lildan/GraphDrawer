@@ -12,19 +12,30 @@ class InterpolationModel {
     
     let args = [ 0.445 , 0.778, 0.801]
     
+    var N : Int = 5
+    var a : Double = 0
+    var b : Double = 2
     
-    var functionTabulation :[(arg:Double, value:Double)] =
-        [ (0.0, 0.0),
-          (0.1, 0.09983),
-          (0.2, 0.19866),
-          //(0.3, 0.29552),
-          (0.4, 0.38941),
-          (0.5, 0.47942),
-          (0.6, 0.56464),
-          //(0.7, 0.64421),
-          (0.8, 0.71735),
-          (0.9, 0.78332)
-        ]
+    var analyticFunction : (Double) -> Double = {
+        return 2*log($0 + 2)
+    }
+    
+    var functionTabulation :[(arg:Double, value:Double)] {
+        get {
+            var fT = [(arg:Double, value:Double)]()
+            let h : Double = (b-a)/Double(N-1)
+            var x = a
+            
+            for _ in 1...N {
+                fT.append((arg: x, value: analyticFunction(x)))
+                x += h
+            }
+            
+            return fT
+            
+        }
+    }
+    
     var interpolationPoints: [Double] = [0.445, 0.778, 0.801 ]
     
     
@@ -41,8 +52,9 @@ class InterpolationModel {
                 
                 res = self.dividedDifferences[i][0]
                 i -= 1
+                let fT = self.functionTabulation
                 while i >= 0 {
-                    res = self.dividedDifferences[i][0] + (X - self.functionTabulation[i].arg) * res
+                    res = self.dividedDifferences[i][0] + (X - fT[i].arg) * res
                     i -= 1
                 }
                 return res
@@ -53,14 +65,15 @@ class InterpolationModel {
     // Returns a string representing interpolation polynom in Gorner`s view
     var functionLiteral: String {
         get {
-            var i = functionTabulation.count-1
+            let fT = functionTabulation
+            var i = fT.count-1
             var dd = String(roundDouble(dividedDifferences[i][0], toPrecision: 2))
             var x_i : String
             var s : String = dd
             i -= 1
             while i>=0 {
                 dd = String(roundDouble(dividedDifferences[i][0], toPrecision: 2))
-                x_i = String(functionTabulation[i].arg)
+                x_i = String(fT[i].arg)
                 
                 s = "(" + s + ")"
                 s = dd + "+(x-" + x_i + ")*" + s
@@ -73,13 +86,14 @@ class InterpolationModel {
     
     var linearApproximationCoefA : Double {
         get {
-            let N = Double(functionTabulation.count)
+            let fT = functionTabulation
+            let N = Double(fT.count)
             var sumX = 0.0
             var sumY = 0.0
             var sumXY = 0.0
             var sumSquareX = 0.0
             
-            for item in functionTabulation {
+            for item in fT {
                 sumX += item.arg
                 sumY += item.value
                 sumXY += item.arg*item.value
@@ -94,12 +108,13 @@ class InterpolationModel {
     
     var linearApproximationCoefB : Double {
         get {
-            let N = Double(functionTabulation.count)
+            let fT = functionTabulation
+            let N = Double(fT.count)
         
             var sumX = 0.0
             var sumY = 0.0
         
-            for item in functionTabulation {
+            for item in fT {
                 sumX += item.arg
                 sumY += item.value
             }
@@ -127,7 +142,9 @@ class InterpolationModel {
     
     func calculateDeviations ()-> Double {
         var result = 0.0
-        for item in functionTabulation {
+        let fT = functionTabulation
+        
+        for item in fT {
             result += pow(item.value - linearApproximationFunction(item.arg), 2)
         }
         return result
@@ -135,12 +152,13 @@ class InterpolationModel {
     
     // Calculates divided differences
      func calculateDD () -> [[Double]] {
+        var fT = functionTabulation
         // 0 divided difference
         var dd = [[Double]]()
         var i = 0
-        while i < functionTabulation.count {
+        while i < fT.count {
             dd.append([Double]())
-            dd[0].append(functionTabulation[i].value)
+            dd[0].append(fT[i].value)
             i += 1
         }
         
@@ -149,7 +167,7 @@ class InterpolationModel {
         repeat {
             for j in 0..<dd[i].count-1 {
                 dd[i+1]
-                    .append((dd[i][j+1]-dd[i][j])/(functionTabulation[j+1+i].arg - functionTabulation[j].arg))
+                    .append((dd[i][j+1]-dd[i][j])/(fT[j+1+i].arg - fT[j].arg))
             }
             i += 1
         } while dd[i].count > 1
