@@ -27,6 +27,44 @@ class InterpolationModel {
         return 2*log($0 + 2)
     }
     
+    func analyticFunctionDerrivative () -> ( (Double) -> Double ) {
+        return {
+            var fact = 1
+            for i in 1...self.N {
+                fact *= i
+            }
+            var sign : Int
+            if (self.N+1) % 2 == 0 {
+                sign = 1
+            } else {
+                sign = -1
+            }
+            return  Double( 2*fact*sign ) / pow($0 + 2, Double(self.N))
+        }
+    }
+    
+    func wfunction (arg: Double) -> Double {
+        var res = 1.0
+        
+        let fT = functionTabulation
+        
+        for item in fT {
+            res *= arg - item.arg
+        }
+        return res
+    }
+    
+    func theoreticalResidual (arg: Double) ->Double {
+        var fact = 1
+        for i in 1...self.N {
+            fact *= i
+        }
+
+        return maxOfDerrOnAB*wfunction(arg: arg) / Double(fact)
+    }
+    
+    
+    
     var functionTabulation :[(arg:Double, value:Double)] {
         get {
             var fT = [(arg:Double, value:Double)]()
@@ -103,12 +141,12 @@ class InterpolationModel {
     var maxMistake : Double {
         get {
             var arg = a
-            var mist = analyticFunction(arg) - interpolationPolynomFunction(arg)
+            var mist = countRealMistake(arg: arg)
             var maxMist = mist
             let h = 0.00001
             
             while arg <= b {
-                mist = analyticFunction(arg) - interpolationPolynomFunction(arg)
+                mist = countRealMistake(arg: arg)
                 if mist < maxMist{
                     maxMist = mist
                 }
@@ -116,6 +154,47 @@ class InterpolationModel {
             }
             return mist
         }
+    }
+    
+    var maxOfDerrOnAB : Double {
+        get {
+            var arg = a
+            let function = analyticFunctionDerrivative()
+            var value = abs(function(arg))
+            var max = value
+            let h = 0.00001
+            
+            while arg <= b {
+                value = abs(function(arg))
+                if value > max {
+                    max = value
+                }
+                arg += h
+            }
+            return max
+        }
+    }
+    
+    var maxOfTheoreticalResidual : Double {
+        get {
+            var arg = a
+            var value = abs(theoreticalResidual(arg: arg))
+            var max = value
+            let h = 0.00001
+            
+            while arg <= b {
+                value = abs(theoreticalResidual(arg: arg))
+                if value > max {
+                    max = value
+                }
+                arg += h
+            }
+            return max
+        }
+    }
+    
+    func countRealMistake (arg: Double) -> Double {
+        return analyticFunction(arg) - interpolationPolynomFunction(arg)
     }
     
     // Calculates divided differences

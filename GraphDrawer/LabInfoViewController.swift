@@ -346,7 +346,7 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
         page.addSubview(header)
         yOffSet += headerHeight
         
-        let cellWidth = scrollView.bounds.size.width / CGFloat(3)
+        var cellWidth = scrollView.bounds.size.width / CGFloat(3)
         
         for i in 0..<model.args.count {
             let cellX = createDefaultCell()
@@ -358,10 +358,12 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
                 xtxt = xtxt + "'"
                 counter += 1
             }
-            cellX.text = xtxt + " = " + String(model.args[i])
+            cellX.text = xtxt + "=" + String(model.args[i])
             page.addSubview((cellX))
         }
         yOffSet += headerHeight
+        
+        cellWidth = scrollView.bounds.size.width / CGFloat(4)
         
         for i in 0..<model.args.count {
             let cellLX = createDefaultCell()
@@ -373,23 +375,31 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
                 xtxt = xtxt + "'"
                 counter += 1
             }
-            var txt = "L(" + xtxt + ") = " + String(value)
+            var txt = "L(" + xtxt + ")=" + String(value)
             cellLX.text = txt
             page.addSubview(cellLX)
             
             let cellAX = createDefaultCell()
             cellAX.frame = CGRect(x: cellWidth, y: yOffSet, width: cellWidth, height: headerHeight)
             value = roundDouble(model.analyticFunction(model.args[i]), toPrecision: 4)
-            txt = "f(" + xtxt + ") = " + String(value)
+            txt = "f(" + xtxt + ")=" + String(value)
             cellAX.text = txt
             page.addSubview(cellAX)
             
             let cellRX = createDefaultCell()
             cellRX.frame = CGRect(x: cellWidth*CGFloat(2), y: yOffSet, width: cellWidth, height: headerHeight)
-            value = roundDouble(model.analyticFunction(model.args[i]) - model.interpolationPolynomFunction(model.args[i]), toPrecision: 4)
-            txt = "R(" + xtxt + ") = " + String(value)
+            value = roundDouble(model.countRealMistake(arg: (model.args[i])), toPrecision: 4)
+            txt = "R(" + xtxt + ")=" + String(value)
             cellRX.text = txt
             page.addSubview(cellRX)
+            
+            let cellThRX = createDefaultCell()
+            cellThRX.frame = CGRect(x: cellWidth*CGFloat(3), y: yOffSet, width: cellWidth, height: headerHeight)
+            value = roundDouble(model.theoreticalResidual(arg: model.args[i]), toPrecision: 4)
+            txt = "ThR(" + xtxt + ")=" + String(value)
+            cellThRX.text = txt
+            page.addSubview(cellThRX)
+
             
             
             yOffSet += headerHeight
@@ -413,25 +423,39 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
         
         page.resultLXLabel = createDefaultCell()
         page.resultLXLabel?.text = "L(x)"
-        page.resultLXLabel?.frame = CGRect(x: 0, y: yOffSet, width: page.bounds.width * CGFloat(1.0/3.0), height: headerHeight)
+        page.resultLXLabel?.frame = CGRect(x: 0, y: yOffSet, width: page.bounds.width * CGFloat(0.25), height: headerHeight)
         page.addSubview(page.resultLXLabel!)
        
         
         page.resultFXLabel = createDefaultCell()
         page.resultFXLabel?.text = "f(x)"
-        page.resultFXLabel?.frame = CGRect(x: page.bounds.width * CGFloat(1.0/3.0), y: yOffSet, width: page.bounds.width * CGFloat(1.0/3.0), height: headerHeight)
+        page.resultFXLabel?.frame = CGRect(x: page.bounds.width * CGFloat(0.25), y: yOffSet, width: page.bounds.width * CGFloat(0.25), height: headerHeight)
         page.addSubview(page.resultFXLabel!)
 
         page.resultRXLabel = createDefaultCell()
         page.resultRXLabel?.text = "R(x)"
-        page.resultRXLabel?.frame = CGRect(x: page.bounds.width * CGFloat(2.0/3.0), y: yOffSet, width: page.bounds.width * CGFloat(1.0/3.0), height: headerHeight)
+        page.resultRXLabel?.frame = CGRect(x: page.bounds.width * CGFloat(0.5), y: yOffSet, width: page.bounds.width * CGFloat(0.25), height: headerHeight)
         page.addSubview(page.resultRXLabel!)
+        
+        page.resultTheorRXLabel = createDefaultCell()
+        page.resultTheorRXLabel?.text = "ThR(x)"
+        page.resultTheorRXLabel?.frame = CGRect(x: page.bounds.width * CGFloat(0.75), y: yOffSet, width: page.bounds.width * CGFloat(0.25), height: headerHeight)
+        page.addSubview(page.resultTheorRXLabel!)
         yOffSet += headerHeight
+        
+        
         
         let labelMistake = createDefaultCell()
         labelMistake.frame = CGRect(x: CGFloat(0), y: yOffSet + headerHeight, width: page.bounds.width , height: headerHeight)
-        labelMistake.text = "Maximal mistake on [a;b] = " +  String(model.maxMistake)
+        labelMistake.text = "Maximal real mistake on [a;b] = " +  String(model.maxMistake)
         page.addSubview(labelMistake)
+        
+        yOffSet += headerHeight
+        
+        let labelThMistake = createDefaultCell()
+        labelThMistake.frame = CGRect(x: CGFloat(0), y: yOffSet , width: page.bounds.width , height: headerHeight)
+        labelThMistake.text = "Maximal theoretical mistake on [a;b] = " //+  String(model.maxOfTheoreticalResidual)
+        page.addSubview(labelThMistake)
         
         yOffSet += CGFloat(2)*headerHeight
         
@@ -442,7 +466,7 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         if textField.tag == 1 || textField.tag == 2 {
-            if let number = Double(textField.text!) {
+            if Double(textField.text!) != nil {
                 textField.layer.borderColor = UIColor.green.cgColor
             }
             else {
@@ -467,7 +491,8 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
             if let page = textField.superview as? PolynomValuesPageView {
                 page.resultLXLabel?.text = "L(x)=" + String(roundDouble(model.interpolationPolynomFunction(number), toPrecision: 4))
                 page.resultFXLabel?.text = "f(x)=" + String(roundDouble(model.analyticFunction(number), toPrecision: 4))
-                page.resultRXLabel?.text = "R(x)=" + String(roundDouble(model.analyticFunction(number) - model.interpolationPolynomFunction(number), toPrecision: 4))
+                page.resultRXLabel?.text = "R(x)=" + String(roundDouble(model.countRealMistake(arg: number), toPrecision: 4))
+                page.resultTheorRXLabel?.text = "ThR(x)=" + String(roundDouble(model.theoreticalResidual(arg: number), toPrecision: 4))
                 }
             } else {
                 textField.layer.borderColor = UIColor.red.cgColor
@@ -475,6 +500,7 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
                     page.resultLXLabel?.text = "L(x)"
                     page.resultFXLabel?.text = "f(x)"
                     page.resultRXLabel?.text = "R(x)"
+                    page.resultTheorRXLabel?.text = "ThR(x)"
                 }
             }
         }
