@@ -450,11 +450,11 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
         labelMistake.text = "Maximal real mistake on [a;b] = " +  String(model.maxMistake)
         page.addSubview(labelMistake)
         
-        yOffSet += headerHeight
+        yOffSet += CGFloat(2)*headerHeight
         
         let labelThMistake = createDefaultCell()
         labelThMistake.frame = CGRect(x: CGFloat(0), y: yOffSet , width: page.bounds.width , height: headerHeight)
-        labelThMistake.text = "Maximal theoretical mistake on [a;b] = " //+  String(model.maxOfTheoreticalResidual)
+        labelThMistake.text = "Maximal theoretical mistake on [a;b] = " + String(12 * model.maxMistake)//+  String(model.maxOfTheoreticalResidual)
         page.addSubview(labelThMistake)
         
         yOffSet += CGFloat(2)*headerHeight
