@@ -16,6 +16,13 @@ class InterpolationModel {
     var a : Double = 0
     var b : Double = 2
     
+    func updateData (iN: Int, ia: Double, ib: Double) {
+        N = iN
+        a = ia
+        b = ib
+        dividedDifferences = calculateDD()
+    }
+    
     var analyticFunction : (Double) -> Double = {
         return 2*log($0 + 2)
     }
@@ -32,7 +39,6 @@ class InterpolationModel {
             }
             
             return fT
-            
         }
     }
     
@@ -62,6 +68,7 @@ class InterpolationModel {
         }
     }
     
+    
     // Returns a string representing interpolation polynom in Gorner`s view
     var functionLiteral: String {
         get {
@@ -83,71 +90,32 @@ class InterpolationModel {
             return s
         }
     }
+
     
-    var linearApproximationCoefA : Double {
+    
+    var analyticFunctionLiteral : String {
         get {
-            let fT = functionTabulation
-            let N = Double(fT.count)
-            var sumX = 0.0
-            var sumY = 0.0
-            var sumXY = 0.0
-            var sumSquareX = 0.0
-            
-            for item in fT {
-                sumX += item.arg
-                sumY += item.value
-                sumXY += item.arg*item.value
-                sumSquareX += item.arg*item.arg
-            }
-            
-            let result : Double = ( N*sumXY - sumX*sumY ) / ( N*sumSquareX - sumX*sumX )
-            
+            let result = "f(x) = 2*ln(x+2)"
             return result
         }
     }
     
-    var linearApproximationCoefB : Double {
+    var maxMistake : Double {
         get {
-            let fT = functionTabulation
-            let N = Double(fT.count)
-        
-            var sumX = 0.0
-            var sumY = 0.0
-        
-            for item in fT {
-                sumX += item.arg
-                sumY += item.value
+            var arg = a
+            var mist = analyticFunction(arg) - interpolationPolynomFunction(arg)
+            var maxMist = mist
+            let h = 0.00001
+            
+            while arg <= b {
+                mist = analyticFunction(arg) - interpolationPolynomFunction(arg)
+                if mist < maxMist{
+                    maxMist = mist
+                }
+                arg += h
             }
-        
-            let result = ( sumY - linearApproximationCoefA*sumX ) / N
-            return result
+            return mist
         }
-    }
-    
-    var linearApproximationFunction : (Double) -> Double {
-        get {
-            return {
-                let result = self.linearApproximationCoefA*$0 + self.linearApproximationCoefB
-                return result
-            }
-        }
-    }
-    
-    var linearApproximationFunctionLiteral : String {
-        get {
-            let result = "A(x) = " + String(roundDouble(linearApproximationCoefA, toPrecision: 4)) + "x + " + String(roundDouble(linearApproximationCoefB, toPrecision: 4))
-            return result
-        }
-    }
-    
-    func calculateDeviations ()-> Double {
-        var result = 0.0
-        let fT = functionTabulation
-        
-        for item in fT {
-            result += pow(item.value - linearApproximationFunction(item.arg), 2)
-        }
-        return result
     }
     
     // Calculates divided differences
