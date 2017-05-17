@@ -337,6 +337,7 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
     
     func createPolynomValuesPageView () -> PolynomValuesPageView {
         let page = PolynomValuesPageView()
+        model.calculateMaxDerrOnAB()
         page.frame.size = scrollView.bounds.size
         
         var yOffSet = CGFloat(0)
@@ -454,8 +455,8 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
         
         let labelThMistake = createDefaultCell()
         labelThMistake.frame = CGRect(x: CGFloat(0), y: yOffSet , width: page.bounds.width , height: headerHeight)
-        model.calculateMaxDerrOnAB()
-        labelThMistake.text = "Maximal theoretical mistake on [a;b] = " +  String(model.maxOfTheoreticalResidual) //String(abs(12 * model.maxMistake))//+
+        
+        labelThMistake.text = "Maximal theoretical mistake on [a;b] = " +  String(model.maxOfTheoreticalResidual)
         page.addSubview(labelThMistake)
         
         yOffSet += CGFloat(2)*headerHeight
@@ -492,8 +493,8 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
             if let page = textField.superview as? PolynomValuesPageView {
                 page.resultLXLabel?.text = "L(x)=" + String(roundDouble(model.interpolationPolynomFunction(number), toPrecision: 4))
                 page.resultFXLabel?.text = "f(x)=" + String(roundDouble(model.analyticFunction(number), toPrecision: 4))
-                page.resultRXLabel?.text = "R(x)=" + String(roundDouble(model.calculateRealMistake(arg: number), toPrecision: 4))
-                page.resultTheorRXLabel?.text = "ThR(x)=" + String(roundDouble(model.theoreticalResidual(arg: number), toPrecision: 4))
+                page.resultRXLabel?.text = "R(x)=" + String(abs(roundDouble(model.calculateRealMistake(arg: number), toPrecision: 4)))
+                page.resultTheorRXLabel?.text = "ThR(x)=" + String(abs(roundDouble(model.theoreticalResidual(arg: number), toPrecision: 4)))
                 }
             } else {
                 textField.layer.borderColor = UIColor.red.cgColor
