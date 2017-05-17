@@ -38,7 +38,7 @@ class InterpolationModel {
             } else {
                 sign = -1
             }
-            return  Double( 2*sign ) / pow($0 + 2, Double(self.N))
+            return  Double( 2*sign ) / pow($0 + 2, Double(self.N+1))
         }
     }
     
