@@ -388,15 +388,15 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
             
             let cellRX = createDefaultCell()
             cellRX.frame = CGRect(x: cellWidth*CGFloat(2), y: yOffSet, width: cellWidth, height: headerHeight)
-            value = roundDouble(model.countRealMistake(arg: (model.args[i])), toPrecision: 4)
-            txt = "R(" + xtxt + ")=" + String(value)
+            value = roundDouble(model.calculateRealMistake(arg: (model.args[i])), toPrecision: 4)
+            txt = "R(" + xtxt + ")=" + String(abs(value))
             cellRX.text = txt
             page.addSubview(cellRX)
             
             let cellThRX = createDefaultCell()
             cellThRX.frame = CGRect(x: cellWidth*CGFloat(3), y: yOffSet, width: cellWidth, height: headerHeight)
             value = roundDouble(model.theoreticalResidual(arg: model.args[i]), toPrecision: 4)
-            txt = "ThR(" + xtxt + ")=" + String(value)
+            txt = "ThR(" + xtxt + ")=" + String(abs(value))
             cellThRX.text = txt
             page.addSubview(cellThRX)
 
@@ -447,14 +447,15 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
         
         let labelMistake = createDefaultCell()
         labelMistake.frame = CGRect(x: CGFloat(0), y: yOffSet + headerHeight, width: page.bounds.width , height: headerHeight)
-        labelMistake.text = "Maximal real mistake on [a;b] = " +  String(model.maxMistake)
+        labelMistake.text = "Maximal real mistake on [a;b] = " +  String(abs(model.maxMistake))
         page.addSubview(labelMistake)
         
         yOffSet += CGFloat(2)*headerHeight
         
         let labelThMistake = createDefaultCell()
         labelThMistake.frame = CGRect(x: CGFloat(0), y: yOffSet , width: page.bounds.width , height: headerHeight)
-        labelThMistake.text = "Maximal theoretical mistake on [a;b] = " + String(12 * model.maxMistake)//+  String(model.maxOfTheoreticalResidual)
+        model.calculateMaxDerrOnAB()
+        labelThMistake.text = "Maximal theoretical mistake on [a;b] = " +  String(model.maxOfTheoreticalResidual) //String(abs(12 * model.maxMistake))//+
         page.addSubview(labelThMistake)
         
         yOffSet += CGFloat(2)*headerHeight
@@ -491,7 +492,7 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
             if let page = textField.superview as? PolynomValuesPageView {
                 page.resultLXLabel?.text = "L(x)=" + String(roundDouble(model.interpolationPolynomFunction(number), toPrecision: 4))
                 page.resultFXLabel?.text = "f(x)=" + String(roundDouble(model.analyticFunction(number), toPrecision: 4))
-                page.resultRXLabel?.text = "R(x)=" + String(roundDouble(model.countRealMistake(arg: number), toPrecision: 4))
+                page.resultRXLabel?.text = "R(x)=" + String(roundDouble(model.calculateRealMistake(arg: number), toPrecision: 4))
                 page.resultTheorRXLabel?.text = "ThR(x)=" + String(roundDouble(model.theoreticalResidual(arg: number), toPrecision: 4))
                 }
             } else {

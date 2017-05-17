@@ -16,30 +16,29 @@ class InterpolationModel {
     var a : Double = 0
     var b : Double = 2
     
+    
     func updateData (iN: Int, ia: Double, ib: Double) {
         N = iN
         a = ia
         b = ib
         dividedDifferences = calculateDD()
-    }
+}
     
     var analyticFunction : (Double) -> Double = {
         return 2*log($0 + 2)
     }
     
-    func analyticFunctionDerrivative () -> ( (Double) -> Double ) {
+    var maxOfDerrOnAB : Double = 0
+    
+    func analyticFunctionDerrivativeWOFactorial () -> ( (Double) -> Double ) {
         return {
-            var fact = 1
-            for i in 1...self.N {
-                fact *= i
-            }
             var sign : Int
             if (self.N+1) % 2 == 0 {
                 sign = 1
             } else {
                 sign = -1
             }
-            return  Double( 2*fact*sign ) / pow($0 + 2, Double(self.N))
+            return  Double( 2*sign ) / pow($0 + 2, Double(self.N))
         }
     }
     
@@ -55,15 +54,9 @@ class InterpolationModel {
     }
     
     func theoreticalResidual (arg: Double) ->Double {
-        var fact = 1
-        for i in 1...self.N {
-            fact *= i
-        }
-
-        return maxOfDerrOnAB*wfunction(arg: arg) / Double(fact)
+        return maxOfDerrOnAB*wfunction(arg: arg)
     }
-    
-    
+
     
     var functionTabulation :[(arg:Double, value:Double)] {
         get {
@@ -79,8 +72,6 @@ class InterpolationModel {
             return fT
         }
     }
-    
-    var interpolationPoints: [Double] = [0.445, 0.778, 0.801 ]
     
     
    lazy var dividedDifferences : [[Double]]!  = self.calculateDD()
@@ -106,47 +97,17 @@ class InterpolationModel {
         }
     }
     
-    
-    // Returns a string representing interpolation polynom in Gorner`s view
-    var functionLiteral: String {
-        get {
-            let fT = functionTabulation
-            var i = fT.count-1
-            var dd = String(roundDouble(dividedDifferences[i][0], toPrecision: 2))
-            var x_i : String
-            var s : String = dd
-            i -= 1
-            while i>=0 {
-                dd = String(roundDouble(dividedDifferences[i][0], toPrecision: 2))
-                x_i = String(fT[i].arg)
-                
-                s = "(" + s + ")"
-                s = dd + "+(x-" + x_i + ")*" + s
-                i -= 1
-            }
-            s = "L(x)=" + s
-            return s
-        }
-    }
 
-    
-    
-    var analyticFunctionLiteral : String {
-        get {
-            let result = "f(x) = 2*ln(x+2)"
-            return result
-        }
-    }
     
     var maxMistake : Double {
         get {
             var arg = a
-            var mist = countRealMistake(arg: arg)
+            var mist = calculateRealMistake(arg: arg)
             var maxMist = mist
             let h = 0.00001
             
             while arg <= b {
-                mist = countRealMistake(arg: arg)
+                mist = calculateRealMistake(arg: arg)
                 if mist < maxMist{
                     maxMist = mist
                 }
@@ -156,13 +117,14 @@ class InterpolationModel {
         }
     }
     
-    var maxOfDerrOnAB : Double {
-        get {
+
+        
+    func calculateMaxDerrOnAB ()  {
             var arg = a
-            let function = analyticFunctionDerrivative()
+            let function = analyticFunctionDerrivativeWOFactorial()
             var value = abs(function(arg))
             var max = value
-            let h = 0.00001
+            let h = 0.0001
             
             while arg <= b {
                 value = abs(function(arg))
@@ -171,16 +133,16 @@ class InterpolationModel {
                 }
                 arg += h
             }
-            return max
+            maxOfDerrOnAB = max
         }
-    }
+    
     
     var maxOfTheoreticalResidual : Double {
         get {
             var arg = a
             var value = abs(theoreticalResidual(arg: arg))
             var max = value
-            let h = 0.00001
+            let h = 0.0001
             
             while arg <= b {
                 value = abs(theoreticalResidual(arg: arg))
@@ -193,7 +155,7 @@ class InterpolationModel {
         }
     }
     
-    func countRealMistake (arg: Double) -> Double {
+    func calculateRealMistake (arg: Double) -> Double {
         return analyticFunction(arg) - interpolationPolynomFunction(arg)
     }
     
@@ -222,30 +184,32 @@ class InterpolationModel {
         return dd
     }
     
+    // Returns a string representing interpolation polynom in Gorner`s view
+    var functionLiteral: String {
+        get {
+            let fT = functionTabulation
+            var i = fT.count-1
+            var dd = String(roundDouble(dividedDifferences[i][0], toPrecision: 2))
+            var x_i : String
+            var s : String = dd
+            i -= 1
+            while i>=0 {
+                dd = String(roundDouble(dividedDifferences[i][0], toPrecision: 2))
+                x_i = String(fT[i].arg)
+                
+                s = "(" + s + ")"
+                s = dd + "+(x-" + x_i + ")*" + s
+                i -= 1
+            }
+            s = "L(x)=" + s
+            return s
+        }
+    }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    var analyticFunctionLiteral : String {
+        get {
+            let result = "f(x) = 2*ln(x+2)"
+            return result
+        }
+    }
 }
