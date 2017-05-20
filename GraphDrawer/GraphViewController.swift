@@ -38,7 +38,6 @@ class GraphViewController : UIViewController {
     func updateUI() {
         if let gv = graphView {
             gv.firstFunc = firstFunc
-            gv.secondFunc = secondFunc
         }
     }
     
