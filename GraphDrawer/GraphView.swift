@@ -10,11 +10,18 @@ import UIKit
 
 @IBDesignable
 class GraphView : UIView {
-    var yForX : ((Double)->Double)? = {$0} {
+    var firstFunc : ((Double)->Double)? = {-$0} {
         didSet {
             setNeedsDisplay()
         }
     }
+
+    var secondFunc : ((Double)->Double)? = {-$0} {
+        didSet {
+            setNeedsDisplay()
+        }
+    }
+
     
     @IBInspectable
     var scale: CGFloat = 50.0 {didSet {setNeedsDisplay() } }
@@ -73,10 +80,30 @@ class GraphView : UIView {
         axesDrawer.contentScaleFactor = contentScaleFactor
         axesDrawer.color = colorAxes
         axesDrawer.drawAxes(in: bounds, origin: origin, pointsPerUnit: scale)
-        drawCurveInRect(bounds, origin: origin, scale: scale)
+        drawCurveInRect(bounds, origin: origin, scale: scale, function: firstFunc, color: UIColor.orange)
+        drawCurveInRect(bounds, origin: origin, scale: scale, function: secondFunc, color: UIColor.blue)
+        
+        /*
+        let label = UILabel()
+        label.text = "L(x)"
+        label.textColor = UIColor.orange
+        label.textAlignment = NSTextAlignment.center
+        //label.backgroundColor = UIColor.clear
+        label.frame = CGRect(x: 20, y: 20, width: 20, height: 20)
+        label.layer.zPosition = 10
+        self.addSubview(label)
+        
+        let label2 = UILabel()
+        label2.text = "L(x)"
+        label2.textColor = UIColor.blue
+        label2.textAlignment = NSTextAlignment.center
+        //label2.backgroundColor = UIColor.clear
+        label2.frame = CGRect(x: 20, y: 40, width: 20, height: 20)
+        self.addSubview(label2)
+        */
     }
     
-    func drawCurveInRect(_ bounds: CGRect,origin : CGPoint, scale: CGFloat){
+    func drawCurveInRect(_ bounds: CGRect, origin : CGPoint, scale: CGFloat, function : ((Double)->Double)?, color: UIColor ){
         
         var xGraph, yGraph : CGFloat
         var x, y : Double
@@ -89,7 +116,7 @@ class GraphView : UIView {
         }
         //
         
-        if yForX != nil {
+        if function != nil {
             color.set()
             let path = UIBezierPath()
             path.lineWidth = lineWidth
@@ -98,7 +125,7 @@ class GraphView : UIView {
                 xGraph = CGFloat(i) / contentScaleFactor
                 
                 x = Double((xGraph - origin.x)/scale)
-                y = (yForX)!(x)
+                y = (function)!(x)
                 
                 guard y.isFinite else { continue }
                 yGraph = origin.y - CGFloat(y)*scale
@@ -116,6 +143,5 @@ class GraphView : UIView {
             }
             path.stroke()
         }
-        
-            }
+    }
 }
