@@ -21,26 +21,65 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
     var model : InterpolationModel = InterpolationModel()
     
     var dataInputPage : DataInputPageView! = nil
-    
+    var pages : [UIView]! = nil
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        var pages = [UIView]()
+         pages = [UIView]()
         
         dataInputPage = createDataInputPage()
-        pages.append(dataInputPage)
+        scrollView.addSubview(dataInputPage)
+        var maxHeight = CGFloat(0)
 
+        for funci in model.funcs {
+            let page = createTabulationPage(funci)
+            if page.bounds.size.height > maxHeight {
+                maxHeight = page.bounds.size.height
+            }
+            pages.append(page)
+        }
         
         // Adding pages to the scrollview
         for (i, page) in pages.enumerated() {
-            page.frame.origin.x = scrollView.bounds.width * CGFloat(i)
+            page.frame.origin.x = scrollView.bounds.width * CGFloat(i+1)
+            page.frame.origin.y = 0
             scrollView.addSubview(page)
         }
         
         scrollView.contentSize.width = scrollView.bounds.size.width*CGFloat(pages.count)
+        scrollView.contentSize.height = maxHeight
         scrollView.isPagingEnabled = true
+    }
+    func redrawTabPages () {
+        
+        for i in 0..<pages.count {
+            pages[i].removeFromSuperview()
+        }
+        
+        pages = [UIView]()
+        var maxHeight = CGFloat(0)
+        
+        for funci in model.funcs {
+            let page = createTabulationPage(funci)
+            if page.bounds.size.height > maxHeight {
+                maxHeight = page.bounds.size.height
+            }
+            pages.append(page)
+        }
+        
+        // Adding pages to the scrollview
+        for (i, page) in pages.enumerated() {
+            page.frame.origin.x = scrollView.bounds.width * CGFloat(i+1)
+            page.frame.origin.y = 0
+            scrollView.addSubview(page)
+        }
+        
+        scrollView.contentSize.width = scrollView.bounds.size.width*CGFloat(pages.count)
+        scrollView.contentSize.height = maxHeight
+        scrollView.isPagingEnabled = true
+
     }
     
     func createDataInputPage () -> DataInputPageView {
@@ -54,7 +93,7 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
         yOffSet += headerHeight
         
         let label1 = UILabel()
-        label1.text = model.analyticFunctionLiteral
+        label1.text = ""
         label1.textAlignment = NSTextAlignment.center
         label1.frame = CGRect(x: 0, y: yOffSet, width: page.bounds.width, height: headerHeight)
         page.addSubview(label1)
@@ -98,65 +137,92 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
         yOffSet += CGFloat(2)*headerHeight
         
         let cellN = createDefaultCell()
-        cellN.text = "eps ="
-        cellN.frame = CGRect(x: page.bounds.width * CGFloat(0.25), y: yOffSet , width: page.bounds.width * CGFloat(0.1), height: headerHeight)
+        cellN.text = "tabulation ="
+        cellN.frame = CGRect(x: 0, y: yOffSet , width: page.bounds.width * CGFloat(0.4), height: headerHeight)
         page.addSubview(cellN)
         
-        page.enterEpsTextField = UITextField()
-        page.enterEpsTextField!.frame = CGRect(x: page.bounds.width * CGFloat(0.35), y: yOffSet , width: page.bounds.width * CGFloat(0.4), height: headerHeight)
-        page.enterEpsTextField!.placeholder = String(model.epsilon)
-        page.enterEpsTextField!.layer.borderColor = UIColor.green.cgColor
-        page.enterEpsTextField!.layer.borderWidth = 1
-        page.enterEpsTextField!.layer.cornerRadius = 5
-        page.enterEpsTextField!.textAlignment = NSTextAlignment.center
-        page.enterEpsTextField!.returnKeyType = .done
-        page.enterEpsTextField!.delegate = self
+        page.enterTabulationTextField = UITextField()
+        page.enterTabulationTextField!.frame = CGRect(x: page.bounds.width * CGFloat(0.35), y: yOffSet , width: page.bounds.width * CGFloat(0.4), height: headerHeight)
+        page.enterTabulationTextField!.layer.borderColor = UIColor.green.cgColor
+        page.enterTabulationTextField!.layer.borderWidth = 1
+        page.enterTabulationTextField!.layer.cornerRadius = 5
+        page.enterTabulationTextField!.textAlignment = NSTextAlignment.center
+        page.enterTabulationTextField!.returnKeyType = .done
+        page.enterTabulationTextField!.delegate = self
         
-        page.enterEpsTextField?.text = "0.001"
-        page.enterEpsTextField?.tag = 3
-        page.addSubview(page.enterEpsTextField!)
+        page.enterTabulationTextField?.text = String(model.tabulation)
+        page.enterTabulationTextField?.tag = 3
+        page.addSubview(page.enterTabulationTextField!)
         yOffSet += CGFloat(2)*headerHeight
         
         page.recalculateButton = UIButton()
-        page.recalculateButton?.setTitle("Calculate Integral", for: .normal)
+        page.recalculateButton?.setTitle("Set", for: .normal)
         page.recalculateButton?.addTarget(self, action: #selector(calculateButtonTap), for: .touchUpInside)
         page.recalculateButton?.frame = CGRect(x: page.bounds.width * CGFloat(0.25), y: yOffSet , width: page.bounds.width * CGFloat(0.5), height: headerHeight)
         page.recalculateButton?.backgroundColor = UIColor.white
         page.recalculateButton?.setTitleColor( .blue , for: .normal)
         page.addSubview(page.recalculateButton!)
         yOffSet += headerHeight
-        
-        page.integralValueLabel = createDefaultCell()
-        page.integralValueLabel?.frame = CGRect(x: CGFloat(0), y: yOffSet, width: scrollView.bounds.width, height: headerHeight)
-        page.addSubview(page.integralValueLabel!)
-        yOffSet += headerHeight
-        
-        page.numberOfIntervalsLabel = createDefaultCell()
-        page.numberOfIntervalsLabel?.frame = CGRect(x: CGFloat(0), y: yOffSet, width: scrollView.bounds.width, height: headerHeight)
-        page.addSubview(page.numberOfIntervalsLabel!)
-        yOffSet += headerHeight
+
         
         return page
+    }
+    
+    func createTabulationPage (_ arg: (fu:(Double)->Double, literal: String, color: UIColor)) -> UIView {
+        let page = UIView()
+        page.frame.size = scrollView.bounds.size
+        var yOffSet = CGFloat(0)
+        
+        let headerHeight : CGFloat = 35
+        let header = createDefaultPageHeader(text: arg.literal, withHeight: headerHeight)
+        header.textColor = arg.color
+        page.addSubview(header)
+        yOffSet += headerHeight
+        
+        
+        let cellWidth = page.bounds.size.width / CGFloat(2)
+        var X = model.a
+        while X <= model.b {
+            let XLabel = createDefaultCell()
+            XLabel.frame = CGRect(x: 0, y: yOffSet, width: cellWidth, height: headerHeight)
+            XLabel.text = String(X)
+            page.addSubview(XLabel)
+            
+            let ValueLabel = createDefaultCell()
+            ValueLabel.frame = CGRect(x: cellWidth, y: yOffSet, width: cellWidth, height: headerHeight)
+            ValueLabel.text = String(arg.fu(X))
+            page.addSubview(ValueLabel)
+
+            yOffSet += headerHeight
+            X += model.tabulation
+        }
+        
+        page.bounds.size.height = yOffSet
+        
+        
+        return page
+        
     }
     
     func calculateButtonTap () {
         if dataInputPage.enterATextField?.layer.borderColor == UIColor.green.cgColor &&
             dataInputPage.enterBTextField?.layer.borderColor == UIColor.green.cgColor &&
-            dataInputPage.enterEpsTextField?.layer.borderColor == UIColor.green.cgColor {
+            dataInputPage.enterTabulationTextField?.layer.borderColor == UIColor.green.cgColor {
             
             let a = Double((dataInputPage.enterATextField?.text)!)!
             let b = Double((dataInputPage.enterBTextField?.text)!)!
-            let eps = Double(((dataInputPage.enterEpsTextField?.text)!)!)!
+            let tab = Double(((dataInputPage.enterTabulationTextField?.text)!)!)!
             
             if b <= a {
                 dataInputPage.enterATextField?.layer.borderColor = UIColor.red.cgColor
                 dataInputPage.enterBTextField?.layer.borderColor = UIColor.red.cgColor
                 return
             }
-            let value = model.Solve(forPrecision: eps, a, b)
-            
-            dataInputPage.integralValueLabel?.text = "Integral value = " + String(value)
-            dataInputPage.numberOfIntervalsLabel?.text = "Number of intervals used in calculation = " + String(model.N)
+            model.a = a
+            model.b = b
+            model.tabulation = tab
+
+            redrawTabPages()
             
             return
         }
@@ -222,7 +288,7 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
         if let identifier = segue.identifier,
         identifier == Storyboard.ShowGraph,
         let vc = destination as? GraphViewController {
-        vc.firstFunc = model.analyticFunction(arg:)
+        vc.funcs = model.funcs
         vc.navigationItem.title = "Graphs"
         }
     }

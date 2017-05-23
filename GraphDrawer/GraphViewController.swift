@@ -11,15 +11,10 @@ import UIKit
 class GraphViewController : UIViewController {
     
     //Model
-    var firstFunc : ((Double) ->Double)? = nil {
-        didSet { updateUI() }
-    }
-    
-    var secondFunc : ((Double) ->Double)? = nil {
+    var funcs : [(fu:(Double)->Double, literal: String, color: UIColor)]? = nil {
         didSet { updateUI() }
     }
 
-    
     //View
     @IBOutlet weak var graphView: GraphView! {
         didSet {
@@ -37,7 +32,7 @@ class GraphViewController : UIViewController {
     
     func updateUI() {
         if let gv = graphView {
-            gv.firstFunc = firstFunc
+            gv.funcs = funcs
         }
     }
     

@@ -10,7 +10,7 @@ import UIKit
 
 @IBDesignable
 class GraphView : UIView {
-    var firstFunc : ((Double)->Double)? = {-$0} {
+    var funcs : [(fu:(Double)->Double, literal: String, color: UIColor)]? = nil {
         didSet {
             setNeedsDisplay()
         }
@@ -73,7 +73,11 @@ class GraphView : UIView {
         axesDrawer.contentScaleFactor = contentScaleFactor
         axesDrawer.color = colorAxes
         axesDrawer.drawAxes(in: bounds, origin: origin, pointsPerUnit: scale)
-        drawCurveInRect(bounds, origin: origin, scale: scale, function: firstFunc, color: UIColor.orange)
+        if funcs != nil{
+        for item in funcs! {
+                drawCurveInRect(bounds, origin: origin, scale: scale, function: item.fu , color: item.color)
+        }
+        }
     }
     
     func drawCurveInRect(_ bounds: CGRect, origin : CGPoint, scale: CGFloat, function : ((Double)->Double)?, color: UIColor ){

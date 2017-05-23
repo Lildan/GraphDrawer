@@ -12,8 +12,7 @@ import UIKit
 class DataInputPageView : UIView {
     var enterATextField : UITextField? = nil
     var enterBTextField : UITextField? = nil
-    var enterEpsTextField : UITextField? = nil
+    var enterTabulationTextField : UITextField? = nil
     var recalculateButton : UIButton? = nil
-    var numberOfIntervalsLabel : UILabel? = nil
-    var integralValueLabel : UILabel? = nil
+
 }
