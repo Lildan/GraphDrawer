@@ -10,7 +10,7 @@ import Foundation
 
 class InterpolationModel {
     
-    var N : Int = 2
+    var N : Int = 1
     var a : Double = 0
     var b : Double = 2
     var epsilon : Double = 0.001
@@ -20,14 +20,6 @@ class InterpolationModel {
     
     func analyticFunction (arg: Double)->Double {
         return pow(1+arg*arg*arg, 0.5)
-        /*
-         var value = calculatedFunction[arg]
-        if value == nil {
-            value = pow(1+arg*arg*arg, 0.5)
-            calculatedFunction[arg] = value!
-        }
-        return value!
-        */
     }
     
     var calculatedFunction : [Double: Double] = [:]
@@ -39,6 +31,7 @@ class InterpolationModel {
         if N == 1 {
             sumfafb = analyticFunction(arg: a) + analyticFunction(arg: b)
         }
+        
         let step =  (b - a) / Double(N)
         
         let sumOfAllEvenFuncValuesInInternalNodes = sumOfAllPrevFuncValuesInInternalNodes
@@ -62,7 +55,7 @@ class InterpolationModel {
         self.a = a
         self.b = b
         self.epsilon = eps
-        N = 2
+        N = 1
         
         var prevValue = 0.0
         var value = 0.0
