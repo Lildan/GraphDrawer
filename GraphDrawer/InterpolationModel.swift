@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import Darwin
 
-class InterpolationModel {
+class CalculationModel {
     
     var a : Double = 0
     var b : Double = 2

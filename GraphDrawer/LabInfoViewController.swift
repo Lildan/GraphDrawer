@@ -18,7 +18,7 @@ class LabInfoViewController: UIViewController, UITextFieldDelegate {
     @IBAction func showGraphTap(_ sender: Any) {
         
     }
-    var model : InterpolationModel = InterpolationModel()
+    var model : CalculationModel = CalculationModel()
     
     var dataInputPage : DataInputPageView! = nil
     var pages : [UIView]! = nil
